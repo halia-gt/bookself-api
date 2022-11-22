@@ -16,16 +16,12 @@ async function selectAllAuthors(): Promise<QueryResult<AuthorDB>> {
     return connection.query(query);
 }
 
-const authorsRepository = {
-    selectAllAuthors,
-};
-
 async function selectCountry(name: string): Promise<QueryResult<Country>> {
     const query: string = `
         SELECT
             *
         FROM authors.countries
-        WHERE name ILIKE '$1';
+        WHERE name ILIKE $1;
     `;
 
     return connection.query(query, [name]);
@@ -42,8 +38,10 @@ async function insertNewCountry(name: string): Promise<QueryResult<CountryId>> {
     return connection.query(query, [name]);
 }
 
-export {
-    authorsRepository,
+const authorsRepository = {
+    selectAllAuthors,
     selectCountry,
     insertNewCountry,
 };
+
+export { authorsRepository };

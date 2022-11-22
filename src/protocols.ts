@@ -18,3 +18,10 @@ export type Country = {
 };
 
 export type CountryId = Omit<Country, "name">;
+
+export type Genre = {
+    id: number,
+    name: string
+};
+
+export type GenreId = Omit<Genre, "name">;
