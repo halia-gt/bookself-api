@@ -13,4 +13,4 @@ const authorsService = {
     listAllAuthors,
 };
 
-export { authorsService }
+export { authorsService };

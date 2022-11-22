@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { QueryResult } from "pg";
-import { Author, AuthorDB } from "../protocols.js";
+import { AuthorDB } from "../protocols.js";
 import { authorsService } from "../services/authors.service.js";
 
 export async function getAllAuthors(_req: Request, res: Response) {
