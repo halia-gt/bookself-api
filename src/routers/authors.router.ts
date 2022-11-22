@@ -1,6 +1,7 @@
 import express from "express";
+import { getAllAuthors } from "../controllers/authors.controller.js";
 
 const authorsRouter = express.Router();
-authorsRouter.get("/oie", (_req, res) => {res.send('oie')});
+authorsRouter.get("/", getAllAuthors);
 
 export { authorsRouter };
