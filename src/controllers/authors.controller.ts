@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AuthorDB } from "../protocols.js";
-import { authorsService } from "../services/authors.service.js";
+import { authorsService } from "../services/index.js";
 
 export async function getAllAuthors(_req: Request, res: Response) {
     try {

@@ -1,6 +1,6 @@
 export type ApplicationError = {
-    name: string;
-    message: string;
+    name: string,
+    message: string
 };
 
 export type AuthorDB = {
@@ -19,3 +19,11 @@ export type SimpleTableDB = {
 
 export type SimpleTableId = Omit<SimpleTableDB, "name">;
 export type SimpleTable = Omit<SimpleTableDB, "id">
+
+export type ReadingBookDB = {
+    id: number,
+    book_id: number,
+    title: string,
+    author: string,
+    image: string
+};
