@@ -27,3 +27,8 @@ export type ReadingBookDB = {
     author: string,
     image: string
 };
+
+export type TBRPriorityDB = {
+    id: number,
+    image: string
+};
