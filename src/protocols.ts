@@ -12,16 +12,10 @@ export type AuthorDB = {
 
 export type Author = Omit<AuthorDB, "id">;
 
-export type Country = {
+export type SimpleTableDB = {
     id: number,
     name: string
 };
 
-export type CountryId = Omit<Country, "name">;
-
-export type Genre = {
-    id: number,
-    name: string
-};
-
-export type GenreId = Omit<Genre, "name">;
+export type SimpleTableId = Omit<SimpleTableDB, "name">;
+export type SimpleTable = Omit<SimpleTableDB, "id">

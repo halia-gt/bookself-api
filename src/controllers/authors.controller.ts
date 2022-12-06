@@ -11,7 +11,6 @@ export async function getAllAuthors(_req: Request, res: Response) {
         if (error.name === "NotFoundError") {
             return res.status(404).send(error);
         }
-        console.log(error)
         return res.status(204).send(error);
     }
 }

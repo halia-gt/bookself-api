@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import { connection } from "../database/database.js";
-import { AuthorDB, Country, CountryId } from "../protocols.js";
+import { AuthorDB, SimpleTableDB, SimpleTableId } from "../protocols.js";
 
 async function selectAllAuthors(): Promise<QueryResult<AuthorDB>> {
     const query: string = `
@@ -16,7 +16,7 @@ async function selectAllAuthors(): Promise<QueryResult<AuthorDB>> {
     return connection.query(query);
 }
 
-async function selectCountry(name: string): Promise<QueryResult<Country>> {
+async function selectCountry(name: string): Promise<QueryResult<SimpleTableDB>> {
     const query: string = `
         SELECT
             *
@@ -27,7 +27,7 @@ async function selectCountry(name: string): Promise<QueryResult<Country>> {
     return connection.query(query, [name]);
 }
 
-async function insertNewCountry(name: string): Promise<QueryResult<CountryId>> {
+async function insertNewCountry(name: string): Promise<QueryResult<SimpleTableId>> {
     const query: string = `
         INSERT INTO authors.countries
             (name)

@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halia-gt/bookself-api"
+  },
   "main": "dist/server.js",
   "scripts": {
-    "build": "nodemon src/server.ts",
+    "build": "npx tsc",
     "start": "node dist/server.js",
-    "dev": "npx nodemon src/server.js"
+    "dev": "nodemon src/server.ts"
   },
   "keywords": [],
   "author": "Nathália Grams Teixeira",

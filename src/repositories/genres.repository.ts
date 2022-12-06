@@ -1,8 +1,8 @@
 import { QueryResult } from "pg";
 import { connection } from "../database/database.js";
-import { Genre, GenreId } from "../protocols.js";
+import { SimpleTableDB, SimpleTableId } from "../protocols.js";
 
-async function selectAllGenres(): Promise<QueryResult<Genre>> {
+async function selectAllGenres(): Promise<QueryResult<SimpleTableDB>> {
     const query: string = `
         SELECT
             *
@@ -13,7 +13,7 @@ async function selectAllGenres(): Promise<QueryResult<Genre>> {
     return connection.query(query);
 }
 
-async function selectAllSubgenres(): Promise<QueryResult<Genre>> {
+async function selectAllSubgenres(): Promise<QueryResult<SimpleTableDB>> {
     const query: string = `
         SELECT
             *
@@ -24,7 +24,7 @@ async function selectAllSubgenres(): Promise<QueryResult<Genre>> {
     return connection.query(query);
 }
 
-async function selectOneSubgenre(name: string): Promise<QueryResult<Genre>> {
+async function selectOneSubgenre(name: string): Promise<QueryResult<SimpleTableDB>> {
     const query: string = `
         SELECT
             *
@@ -35,7 +35,7 @@ async function selectOneSubgenre(name: string): Promise<QueryResult<Genre>> {
     return connection.query(query, [name]);
 }
 
-async function insertNewSubgenre(name: string): Promise<QueryResult<GenreId>> {
+async function insertNewSubgenre(name: string): Promise<QueryResult<SimpleTableId>> {
     const query: string = `
         INSERT INTO books.subgenres
             (name)
