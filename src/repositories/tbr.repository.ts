@@ -5,7 +5,8 @@ import { TBRPriorityDB } from "../protocols.js";
 async function selectPriorityTBR(): Promise<QueryResult<TBRPriorityDB>> {
     const query: string = `
         SELECT
-            b.id,
+            t.id,
+            t.book_id,
             b.image
         FROM shelves.tbr t
         JOIN books.books b ON t.book_id = b.id

@@ -30,5 +30,18 @@ export type ReadingBookDB = {
 
 export type TBRPriorityDB = {
     id: number,
+    book_id: number,
     image: string
 };
+
+export type PurchasesDB = {
+    id: number,
+    book_id: number,
+    title: string,
+    author: string,
+    image: string,
+    price: number,
+    format: string,
+    store: string,
+    month: number
+}
