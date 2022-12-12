@@ -2,6 +2,7 @@ import express from "express";
 import { authorsRouter } from "./authors.router.js";
 import { booksRouter } from "./books.router.js";
 import { purchasesRouter } from "./purchases.router.js";
+import { statsRouter } from "./stats.router.js";
 import { tbrRouter } from "./tbr.router.js";
 
 const router = express.Router();
@@ -11,5 +12,6 @@ const router = express.Router();
         .use("/books", booksRouter)
         .use("/tbr", tbrRouter)
         .use("/purchases", purchasesRouter)
+        .use("/stats", statsRouter)
 
 export { router };
