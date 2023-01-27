@@ -2,6 +2,13 @@ import { notFoundError } from "../errors/not-found-error.js";
 import { StatsMainDB } from "../protocols.js";
 import { statsRepository, topsRepository } from "../repositories/index.js";
 
+async function listAllYears() {
+    const years = await statsRepository.selectYears();
+    if (!years) throw notFoundError();
+
+    return years;
+}
+
 async function listMainStats(year: number) {
     const existYear = await statsRepository.selectYear(year);
     if (!existYear) throw notFoundError();
@@ -56,6 +63,7 @@ async function listMainStats(year: number) {
 }
 
 const statsService = {
+    listAllYears,
     listMainStats,
 };
 

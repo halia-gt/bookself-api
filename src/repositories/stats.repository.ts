@@ -1,5 +1,15 @@
 import { prisma } from "../database/database.js";
 
+async function selectYears() {
+    return prisma.years.findMany({
+        where: {
+            year: {
+                gte: 2022,
+            }
+        }
+    });
+}
+
 async function selectYear(year: number) {
     return prisma.years.findFirst({
         where: {
@@ -102,6 +112,7 @@ async function countOwnedBooksRead() {
 
 
 const statsRepository = {
+    selectYears,
     selectYear,
     selectStatsBooksRead,
     countPagesRead,
