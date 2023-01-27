@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
-import { TBRPriorityDB } from "../protocols";
 import { tbrService } from "../services/index.js";
+import { tbr, books_books } from "@prisma/client";
 
 export async function getPriorityTBR(_req: Request, res: Response) {
     try {
-        const priorityTBRbooks: TBRPriorityDB[] = await tbrService.listPriorityTBR();
+        const priorityTBRbooks: (tbr & {
+            books: books_books;
+        })[] = await tbrService.listPriorityTBR();
 
         return res.status(200).send(priorityTBRbooks);
     } catch (error) {

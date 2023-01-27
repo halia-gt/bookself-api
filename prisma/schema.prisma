@@ -1,0 +1,402 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["authors", "books", "shelves", "tops"]
+}
+
+model authors_authors {
+  id            Int                @id @default(autoincrement())
+  name          String             @unique @db.VarChar(30)
+  identity      authors_identities
+  country_id    Int?
+  countries     countries?         @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  authors_books authors_books[]
+  authors       tops_authors[]
+
+  @@map("authors")
+  @@schema("authors")
+}
+
+model countries {
+  id      Int               @id @default(autoincrement())
+  name    String            @unique @db.VarChar(20)
+  authors authors_authors[]
+
+  @@schema("authors")
+}
+
+model audiences {
+  id    Int            @id @default(autoincrement())
+  name  audiences_name
+  books books_books[]
+
+  @@schema("books")
+}
+
+model authors_books {
+  id        Int             @id @default(autoincrement())
+  author_id Int
+  book_id   Int
+  authors   authors_authors @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  books     books_books     @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("books")
+}
+
+model books_books {
+  id                                                 Int                        @id @default(autoincrement())
+  title                                              String                     @db.VarChar(100)
+  publication_date                                   DateTime                   @db.Date
+  pages                                              Int
+  average_rating                                     Decimal                    @db.Decimal
+  genre_id                                           Int
+  subgenres_id                                       Int
+  audience_id                                        Int
+  classic                                            Boolean
+  image                                              String
+  authors_books                                      authors_books[]
+  audiences                                          audiences                  @relation(fields: [audience_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  genres                                             genres                     @relation(fields: [genre_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subgenres                                          subgenres                  @relation(fields: [subgenres_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  representativities_books                           representativities_books[]
+  series_books                                       series_books[]
+  books_read                                         books_read[]
+  owned                                              owned[]
+  purchases                                          purchases[]
+  tbr                                                tbr?
+  books                                              tops_books[]
+  books_life                                         books_life[]
+  superlatives_superlatives_best_bookTobooks         superlatives[]             @relation("superlatives_best_bookTobooks")
+  superlatives_superlatives_best_coverTobooks        superlatives[]             @relation("superlatives_best_coverTobooks")
+  superlatives_superlatives_most_challengingTobooks  superlatives[]             @relation("superlatives_most_challengingTobooks")
+  superlatives_superlatives_most_disapointingTobooks superlatives[]             @relation("superlatives_most_disapointingTobooks")
+  superlatives_superlatives_most_inspiringTobooks    superlatives[]             @relation("superlatives_most_inspiringTobooks")
+  superlatives_superlatives_most_surprisingTobooks   superlatives[]             @relation("superlatives_most_surprisingTobooks")
+  superlatives_superlatives_worst_bookTobooks        superlatives[]             @relation("superlatives_worst_bookTobooks")
+
+  @@map("books")
+  @@schema("books")
+}
+
+model genres {
+  id    Int           @id @default(autoincrement())
+  name  genres_name   @unique
+  books books_books[]
+
+  @@schema("books")
+}
+
+model representativities {
+  id                       Int                        @id @default(autoincrement())
+  name                     books_representativities
+  representativities_books representativities_books[]
+
+  @@schema("books")
+}
+
+model representativities_books {
+  id                  Int                @id @default(autoincrement())
+  representativity_id Int
+  book_id             Int
+  books               books_books        @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  representativities  representativities @relation(fields: [representativity_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("books")
+}
+
+model books_series {
+  id                                             Int                   @id @default(autoincrement())
+  name                                           String                @unique @db.VarChar(40)
+  total_number_of_books                          Int
+  publish_status                                 series_publish_status
+  series_books                                   series_books[]
+  series                                         shelves_series[]
+  series_finished                                series_finished[]
+  series_ongoing                                 series_ongoing[]
+  superlatives_superlatives_best_seriesToseries  superlatives[]        @relation("superlatives_best_seriesToseries")
+  superlatives_superlatives_worst_seriesToseries superlatives[]        @relation("superlatives_worst_seriesToseries")
+
+  @@map("series")
+  @@schema("books")
+}
+
+model series_books {
+  id         Int          @id @default(autoincrement())
+  book_id    Int
+  series_id  Int
+  order      Int
+  series_end Boolean      @default(false)
+  books      books_books  @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  series     books_series @relation(fields: [series_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("books")
+}
+
+model subgenres {
+  id    Int           @id @default(autoincrement())
+  name  String        @unique @db.VarChar(20)
+  books books_books[]
+
+  @@schema("books")
+}
+
+model books_read {
+  id            Int             @id @default(autoincrement())
+  book_id       Int
+  rating        Decimal?        @db.Decimal
+  minutes       Int?
+  book_language books_languages
+  book_format   books_formats
+  author_status authors_status
+  acquired      book_acquired
+  date_started  DateTime?       @default(dbgenerated("(CURRENT_TIMESTAMP AT TIME ZONE 'BRT'::text)")) @db.Date
+  date_finished DateTime?       @default(dbgenerated("(CURRENT_TIMESTAMP AT TIME ZONE 'BRT'::text)")) @db.Date
+  books         books_books     @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("shelves")
+}
+
+model owned {
+  id          Int           @id @default(autoincrement())
+  book_id     Int
+  book_format books_formats
+  acquired    book_acquired
+  books       books_books   @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("shelves")
+}
+
+model purchases {
+  id      Int           @id @default(autoincrement())
+  book_id Int
+  store   String?       @db.VarChar(200)
+  price   Int?
+  format  books_formats
+  date    DateTime      @default(dbgenerated("(CURRENT_TIMESTAMP AT TIME ZONE 'BRT'::text)")) @db.Date
+  books   books_books   @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("shelves")
+}
+
+model shelves_series {
+  id          Int                @id @default(autoincrement())
+  series_id   Int?
+  user_status series_user_status
+  series      books_series?      @relation(fields: [series_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("series")
+  @@schema("shelves")
+}
+
+model tbr {
+  id       Int          @id @default(autoincrement())
+  book_id  Int?         @unique
+  access   books_access
+  priority Boolean      @default(false)
+  books    books_books? @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("shelves")
+}
+
+model tops_authors {
+  id        Int              @id @default(autoincrement())
+  year_id   Int
+  position  Int              @unique
+  author_id Int?
+  authors   authors_authors? @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  years     years            @relation(fields: [year_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("authors")
+  @@schema("tops")
+}
+
+model tops_books {
+  id       Int          @id @default(autoincrement())
+  year_id  Int
+  position Int
+  book_id  Int?
+  books    books_books? @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  years    years        @relation(fields: [year_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("books")
+  @@schema("tops")
+}
+
+model books_life {
+  id       Int          @id @default(autoincrement())
+  position Int          @unique
+  book_id  Int?
+  books    books_books? @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("tops")
+}
+
+model series_finished {
+  id       Int           @id @default(autoincrement())
+  year_id  Int
+  position Int           @unique
+  serie_id Int?
+  series   books_series? @relation(fields: [serie_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  years    years         @relation(fields: [year_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("tops")
+}
+
+model series_ongoing {
+  id       Int           @id @default(autoincrement())
+  year_id  Int
+  position Int           @unique
+  serie_id Int?
+  series   books_series? @relation(fields: [serie_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  years    years         @relation(fields: [year_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("tops")
+}
+
+model superlatives {
+  id                                          Int           @id @default(autoincrement())
+  year_id                                     Int
+  best_book                                   Int?
+  best_series                                 Int?
+  best_character                              String?       @db.VarChar(50)
+  best_couple                                 String?       @db.VarChar(100)
+  best_cover                                  Int?
+  most_inspiring                              Int?
+  most_challenging                            Int?
+  most_surprising                             Int?
+  most_disapointing                           Int?
+  worst_character                             String?       @db.VarChar(50)
+  worst_couple                                String?       @db.VarChar(100)
+  worst_series                                Int?
+  worst_book                                  Int?
+  books_superlatives_best_bookTobooks         books_books?  @relation("superlatives_best_bookTobooks", fields: [best_book], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  books_superlatives_best_coverTobooks        books_books?  @relation("superlatives_best_coverTobooks", fields: [best_cover], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  series_superlatives_best_seriesToseries     books_series? @relation("superlatives_best_seriesToseries", fields: [best_series], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  books_superlatives_most_challengingTobooks  books_books?  @relation("superlatives_most_challengingTobooks", fields: [most_challenging], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  books_superlatives_most_disapointingTobooks books_books?  @relation("superlatives_most_disapointingTobooks", fields: [most_disapointing], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  books_superlatives_most_inspiringTobooks    books_books?  @relation("superlatives_most_inspiringTobooks", fields: [most_inspiring], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  books_superlatives_most_surprisingTobooks   books_books?  @relation("superlatives_most_surprisingTobooks", fields: [most_surprising], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  books_superlatives_worst_bookTobooks        books_books?  @relation("superlatives_worst_bookTobooks", fields: [worst_book], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  series_superlatives_worst_seriesToseries    books_series? @relation("superlatives_worst_seriesToseries", fields: [worst_series], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  years                                       years         @relation(fields: [year_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("tops")
+}
+
+model years {
+  id              Int               @id @default(autoincrement())
+  year            Int
+  reading_goal    Int
+  authors         tops_authors[]
+  books           tops_books[]
+  series_finished series_finished[]
+  series_ongoing  series_ongoing[]
+  superlatives    superlatives[]
+
+  @@schema("tops")
+}
+
+enum authors_identities {
+  Male
+  Female
+  Other
+
+  @@schema("authors")
+}
+
+enum authors_status {
+  New_to_me   @map("New to me")
+  Read_before @map("Read before")
+  Debut
+
+  @@schema("authors")
+}
+
+enum audiences_name {
+  Children
+  Young_Adult @map("Young Adult")
+  Adult
+
+  @@schema("books")
+}
+
+enum book_acquired {
+  Kindle_Unlimited @map("Kindle Unlimited")
+  Bought
+  Gift
+  Storytel
+  Library
+  Borrowed
+
+  @@schema("books")
+}
+
+enum books_access {
+  Kindle_Unlimited @map("Kindle Unlimited")
+  Storytel
+  Owned
+  No
+
+  @@schema("books")
+}
+
+enum books_formats {
+  eBook
+  Audiobook
+  Physical
+
+  @@schema("books")
+}
+
+enum books_languages {
+  Portuguese
+  English
+  Spanish
+
+  @@schema("books")
+}
+
+enum books_representativities {
+  LGBTQIA_   @map("LGBTQIA+")
+  Racial
+  Disability
+
+  @@schema("books")
+}
+
+enum genres_name {
+  Comedy
+  Fantasy
+  Historical
+  Horror
+  Literary_Fiction @map("Literary Fiction")
+  Magical_Realism  @map("Magical Realism")
+  Mystery
+  Non_Fiction      @map("Non Fiction")
+  Romance
+  Science_Fiction  @map("Science Fiction")
+
+  @@schema("books")
+}
+
+enum series_publish_status {
+  Complete
+  Ongoing
+
+  @@schema("books")
+}
+
+enum series_user_status {
+  Completed
+  Started
+  Caught_Up @map("Caught Up")
+  DNF
+  TBR
+
+  @@schema("books")
+}

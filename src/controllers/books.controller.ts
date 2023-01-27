@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
-import { ReadingBookDB } from "../protocols";
 import { booksService } from "../services/index.js";
+import { authors_books, books_books, authors_authors, books_read } from "@prisma/client";
+
 
 export async function getReadingBooks(_req: Request, res: Response) {
     try {
-        const readingBooks: ReadingBookDB[] = await booksService.listReadingBooks();
+        const readingBooks: (authors_books & {
+            books: books_books & {
+                books_read: books_read[];
+            };
+            authors: authors_authors;
+        })[] = await booksService.listReadingBooks();
 
         return res.status(200).send(readingBooks);
     } catch (error) {

@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
-import { PurchasesDB } from "../protocols.js";
 import { purchasesService } from "../services/index.js";
+import { purchases, books_books, authors_authors } from "@prisma/client";
 
 export async function getLastPurchases(_req: Request, res: Response) {
     try {
-        const lastPurchases: PurchasesDB[] = await purchasesService.listLastPurchases();
+        const lastPurchases: (purchases & {
+            books: books_books & {
+                authors_books: {
+                    authors: authors_authors;
+                }[];
+            };
+        })[] = await purchasesService.listLastPurchases();
 
         return res.status(200).send(lastPurchases);
     } catch (error) {

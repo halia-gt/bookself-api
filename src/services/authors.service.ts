@@ -1,13 +1,12 @@
-import { QueryResult } from "pg";
+import { authors_authors, countries } from "@prisma/client";
 import { notFoundError } from "../errors/not-found-error.js";
-import { AuthorDB } from "../protocols.js";
 import { authorsRepository } from "../repositories/index.js";
 
-async function listAllAuthors(): Promise<AuthorDB[]> {
-    const result: QueryResult<AuthorDB> = await authorsRepository.selectAllAuthors();
+async function listAllAuthors(): Promise<(authors_authors & { countries: countries; })[]> {
+    const result: (authors_authors & { countries: countries; })[]  = await authorsRepository.selectAllAuthors();
     if (!result) throw notFoundError();
 
-    return result.rows;
+    return result;
 }
 
 const authorsService = {

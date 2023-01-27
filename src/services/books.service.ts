@@ -1,13 +1,22 @@
-import { QueryResult } from "pg";
 import { notFoundError } from "../errors/not-found-error.js";
-import { ReadingBookDB } from "../protocols.js";
 import { booksRepository } from "../repositories/index.js";
+import { authors_books, books_books, authors_authors, books_read } from "@prisma/client";
 
-async function listReadingBooks(): Promise<ReadingBookDB[]> {
-    const result: QueryResult<ReadingBookDB> = await booksRepository.selectReadingBooks();
+async function listReadingBooks(): Promise<(authors_books & {
+    books: books_books & {
+        books_read: books_read[];
+    };
+    authors: authors_authors;
+})[]> {
+    const result: (authors_books & {
+        books: books_books & {
+            books_read: books_read[];
+        };
+        authors: authors_authors;
+    })[] = await booksRepository.selectReadingBooks();
     if (!result) throw notFoundError();
 
-    return result.rows;
+    return result;
 }
 
 const booksService = {

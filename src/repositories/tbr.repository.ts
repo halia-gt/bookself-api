@@ -1,20 +1,15 @@
-import { QueryResult } from "pg";
-import { connection } from "../database/database.js";
-import { TBRPriorityDB } from "../protocols.js";
+import { prisma } from "../database/database.js";
 
-async function selectPriorityTBR(): Promise<QueryResult<TBRPriorityDB>> {
-    const query: string = `
-        SELECT
-            t.id,
-            t.book_id,
-            b.image
-        FROM shelves.tbr t
-        JOIN books.books b ON t.book_id = b.id
-        WHERE priority = 't'
-        ORDER BY b.id;
-    `;
-
-    return connection.query(query);
+async function selectPriorityTBR() {
+    return prisma.tbr.findMany({
+        where: {
+            priority: true,
+        },
+        include: {
+            books: true,
+        },
+        take: 4,
+    });
 }
 
 const tbrRepository = {

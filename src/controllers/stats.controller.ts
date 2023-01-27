@@ -17,8 +17,8 @@ export async function getMainStats(req: Request, res: Response) {
         if (error.name === "NotFoundError") {
             return res.status(404).send(error);
         }
-        if (error.name === "BadRequstError") {
-            return res.status(404).send(error);
+        if (error.name === "BadRequestError") {
+            return res.status(400).send(error);
         }
         return res.status(204).send(error);
     }

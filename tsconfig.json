@@ -4,9 +4,30 @@
         "esModuleInterop": true,
         "module": "es6",
         "moduleResolution": "Node",
-        "target": "es5"
+        "target": "es2020",
+        "noImplicitAny": true,
+        "rootDirs": [
+            "src",
+            "tests"
+          ],
+        "baseUrl": "src",
+        "paths": {
+            "@/*": [
+              "*"
+            ]
+        },
+        "plugins": [
+            {
+              "transform": "typescript-transform-paths"
+            }
+        ]
     },
     "ts-node": {
         "esm": true
-    }
+    },
+    "include": [
+        "src",
+        "tests",
+        "src/repositories/books.repository.ts"
+    ]
 }

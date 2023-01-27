@@ -1,22 +1,14 @@
-import { QueryResult } from "pg";
-import { connection } from "../database/database.js";
-import { AuthorDB, SimpleTableDB, SimpleTableId } from "../protocols.js";
+import { prisma, connection } from "../database/database.js";
 
-async function selectAllAuthors(): Promise<QueryResult<AuthorDB>> {
-    const query: string = `
-        SELECT
-            a.id,
-            a.name,
-            a.identity,
-            c.name AS country
-        FROM authors.authors a
-        JOIN authors.countries c ON c.id = a.country_id
-        ORDER BY a.id;
-    `;
-    return connection.query(query);
+async function selectAllAuthors() {
+    return prisma.authors_authors.findMany({
+        include: {
+            countries: true
+        }
+    });
 }
 
-async function selectCountry(name: string): Promise<QueryResult<SimpleTableDB>> {
+async function selectCountry(name: string) {
     const query: string = `
         SELECT
             *
@@ -27,7 +19,7 @@ async function selectCountry(name: string): Promise<QueryResult<SimpleTableDB>> 
     return connection.query(query, [name]);
 }
 
-async function insertNewCountry(name: string): Promise<QueryResult<SimpleTableId>> {
+async function insertNewCountry(name: string) {
     const query: string = `
         INSERT INTO authors.countries
             (name)

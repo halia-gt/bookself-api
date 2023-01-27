@@ -1,13 +1,40 @@
 import { QueryResult } from "pg";
-import { connection } from "../database/database.js";
-import { ReadingBookDB } from "../protocols.js";
+import { connection, prisma } from "../database/database.js";
 
-async function selectReadingBooks(): Promise<QueryResult<ReadingBookDB>> {
+async function selectReadingBooks() {
+    return prisma.authors_books.findMany({
+        where: {
+            books: {
+                books_read: {
+                    some: {
+                        AND: [
+                            { date_started: { not: null } },
+                            { date_finished: null },
+
+                        ],
+                    },
+                }
+            }
+
+        },
+        include: {
+            books: {
+                include: {
+                    books_read: true,
+                }
+            },
+            authors: true,
+        }
+    });
+}
+
+async function selectBooksRead(): Promise<QueryResult> {
     const query: string = `
         SELECT
-            br.book_id AS id,
+            br.book_id,
             b.title,
             a.name AS author,
+            br.rating
             b.image
         FROM shelves.books_read br
         JOIN books.books b ON br.book_id = b.id
@@ -21,6 +48,7 @@ async function selectReadingBooks(): Promise<QueryResult<ReadingBookDB>> {
 
 const booksRepository = {
     selectReadingBooks,
+    selectBooksRead,
 };
 
 export { booksRepository };

@@ -1,13 +1,24 @@
-import { QueryResult } from "pg";
 import { notFoundError } from "../errors/not-found-error.js";
-import { PurchasesDB } from "../protocols.js";
 import { purchasesRepository } from "../repositories/index.js";
+import { purchases, books_books, authors_authors } from "@prisma/client";
 
-async function listLastPurchases(): Promise<PurchasesDB[]> {
-    const result: QueryResult<PurchasesDB> = await purchasesRepository.selectLastPurchases();
+async function listLastPurchases(): Promise<(purchases & {
+    books: books_books & {
+        authors_books: {
+            authors: authors_authors;
+        }[];
+    };
+})[]> {
+    const result: (purchases & {
+        books: books_books & {
+            authors_books: {
+                authors: authors_authors;
+            }[];
+        };
+    })[] = await purchasesRepository.selectLastPurchases();
     if (!result) throw notFoundError();
 
-    return result.rows;
+    return result;
 }
 
 const purchasesService = {

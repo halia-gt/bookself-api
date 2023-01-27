@@ -1,8 +1,6 @@
-import { QueryResult } from "pg";
-import { connection } from "../database/database.js";
-import { PurchasesDB } from "../protocols.js";
+import { prisma } from "../database/database.js";
 
-async function selectLastPurchases(): Promise<QueryResult<PurchasesDB>> {
+async function selectLastPurchases() {
     const query: string = `
         SELECT
             p.id,
@@ -24,7 +22,23 @@ async function selectLastPurchases(): Promise<QueryResult<PurchasesDB>> {
         LIMIT 3;
     `;
 
-    return connection.query(query);
+    return prisma.purchases.findMany({
+        take: 3,
+        include: {
+            books: {
+                include: {
+                    authors_books: {
+                        select: {
+                            authors: true,
+                        }
+                    }
+                }
+            },
+        },
+        orderBy: {
+            date: "desc",
+        }
+    });
 }
 
 const purchasesRepository = {

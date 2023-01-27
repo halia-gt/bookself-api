@@ -3,6 +3,6 @@ import { getMainStats } from "../controllers/index.js";
 
 const statsRouter = express.Router();
 statsRouter
-    .get("/:year", getMainStats);
+    .get("/main/:year", getMainStats);
 
 export { statsRouter };
