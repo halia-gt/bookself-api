@@ -110,6 +110,70 @@ async function countOwnedBooksRead() {
     });
 }
 
+async function countMonthlyBooksRead(year: number) {
+    const result: {
+        books: number,
+        minutes: number,
+    }[] = [{ books: 0, minutes: 0 }];
+
+    for (let i = 1 ; i <= 12 ; i++) {
+        const lastDay = new Date(year, i, 0).getDate();
+
+        const aux = await prisma.books_read.aggregate({
+            where: {
+                date_finished: {
+                    lte: new Date(`${year}-${i}-${lastDay}`).toISOString(),
+                    gte: new Date(`${year}-${i}-01`).toISOString(),
+                },
+            },
+            _count: {
+                book_id: true,
+            },
+            _sum: {
+                minutes: true,  
+            },
+        });
+
+        result[i - 1] = {
+            books: aux._count.book_id === null ? 0 : aux._count.book_id,
+            minutes: aux._sum.minutes === null ? 0 : aux._sum.minutes,
+        };
+    }
+
+    return result;
+}
+
+async function countMonthlyPagesRead(year: number) {
+    const result: {
+        pages: number,
+    }[] = [{ pages: 0 }];
+
+    for (let i = 1 ; i <= 12 ; i++) {
+        const lastDay = new Date(year, i, 0).getDate();
+
+        const aux = await prisma.books_books.aggregate({
+            where: {
+                books_read: {
+                    some: {
+                        date_finished: {
+                            lte: new Date(`${year}-${i}-${lastDay}`).toISOString(),
+                            gte: new Date(`${year}-${i}-01`).toISOString(),
+                        }, 
+                    }
+                },
+            },
+            _sum: {
+                pages: true,
+            }
+        });
+
+        result[i - 1] = {
+            pages: aux._sum.pages === null ? 0 : aux._sum.pages,
+        };
+    }
+
+    return result;
+}
 
 const statsRepository = {
     selectYears,
@@ -119,6 +183,8 @@ const statsRepository = {
     daysToFinishRead,
     countOwnedBooks,
     countOwnedBooksRead,
+    countMonthlyBooksRead,
+    countMonthlyPagesRead,
 };
 
 export { statsRepository };

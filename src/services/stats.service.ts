@@ -62,9 +62,28 @@ async function listMainStats(year: number) {
     return mainStats;
 }
 
+async function listMonthlyStats(year: number) {
+    const existYear = await statsRepository.selectYear(year);
+    if (!existYear) throw notFoundError();
+
+    const booksRead = await statsRepository.countMonthlyBooksRead(existYear.year);
+    const pagesRead = await statsRepository.countMonthlyPagesRead(existYear.year);
+
+    const result = booksRead.map((element, index) => {
+        return {
+            ...element,
+            month: index + 1,
+            pages: pagesRead[index].pages,
+        }
+    });
+
+    return result;
+}
+
 const statsService = {
     listAllYears,
     listMainStats,
+    listMonthlyStats,
 };
 
 export { statsService };

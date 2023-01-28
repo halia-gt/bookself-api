@@ -40,3 +40,24 @@ export async function getMainStats(req: Request, res: Response) {
         return res.status(204).send(error);
     }
 }
+
+export async function getMonthlyStats(req: Request, res: Response) {
+    const { year: yearString } = req.params;
+    const year = Number(yearString);
+
+    if (!yearString || isNaN(year)) throw badRequestError("Something is missing in the requisition");
+
+    try {
+        const monthlyStats = await statsService.listMonthlyStats(year);
+
+        return res.status(200).send(monthlyStats);
+    } catch (error) {
+        if (error.name === "NotFoundError") {
+            return res.status(404).send(error);
+        }
+        if (error.name === "BadRequestError") {
+            return res.status(400).send(error);
+        }
+        return res.status(204).send(error);
+    }
+}
