@@ -33,7 +33,7 @@ async function listMainStats(year: number) {
 
         averageDaysToRead += (dayFinished - dayStarted)/milissecToDays;
     }, 0);
-    averageDaysToRead = averageDaysToRead/dates.length;
+    averageDaysToRead = Number((averageDaysToRead/dates.length).toFixed(1));
 
     const ownedBooks = await statsRepository.countOwnedBooks();
     if (!ownedBooks) throw notFoundError();
@@ -53,7 +53,7 @@ async function listMainStats(year: number) {
         total_books_owned: ownedBooks._count.id,
         owned_books_read: ownedBooksRead._count.book_id,
         average_days_to_read: averageDaysToRead,
-        average_rating: Number(booksRead._avg.rating),
+        average_rating: Number(booksRead._avg.rating.toFixed(1)),
         favorite_book: favoriteBook.books.title,
         most_pages: pagesRead._max.pages,
         least_pages: pagesRead._min.pages,
