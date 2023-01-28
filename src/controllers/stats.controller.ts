@@ -27,7 +27,7 @@ export async function getMainStats(req: Request, res: Response) {
     if (!yearString || isNaN(year)) throw badRequestError("Something is missing in the requisition");
 
     try {
-        const mainStats: StatsMainDB = await statsService.listMainStats(year);
+        const mainStats = await statsService.listMainStats(year);
 
         return res.status(200).send(mainStats);
     } catch (error) {

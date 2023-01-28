@@ -28,6 +28,5 @@
     "include": [
         "src",
         "tests",
-        "src/repositories/books.repository.ts"
     ]
 }
