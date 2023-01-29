@@ -205,6 +205,9 @@ async function groupBooksByStars(year: number) {
         _count: {
             book_id: true,
         },
+        orderBy: {
+            rating: "desc",
+        },
     });
 }
 
