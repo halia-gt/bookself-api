@@ -193,6 +193,21 @@ async function groupBooksByFormat(year: number) {
     });
 }
 
+async function groupBooksByStars(year: number) {
+    return prisma.books_read.groupBy({
+        by: ["rating"],
+        where: {
+            date_finished: {
+                lte: new Date(`${year}-12-31`).toISOString(),
+                gte: new Date(`${year}-01-01`).toISOString(),
+            },
+        },
+        _count: {
+            book_id: true,
+        },
+    });
+}
+
 const statsRepository = {
     selectYears,
     selectYear,
@@ -204,6 +219,7 @@ const statsRepository = {
     countMonthlyBooksRead,
     countMonthlyPagesRead,
     groupBooksByFormat,
+    groupBooksByStars,
 };
 
 export { statsRepository };

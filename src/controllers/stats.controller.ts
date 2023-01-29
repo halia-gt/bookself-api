@@ -82,3 +82,24 @@ export async function getFormatStats(req: Request, res: Response) {
         return res.status(204).send(error);
     }
 }
+
+export async function getStarsStats(req: Request, res: Response) {
+    const { year: yearString } = req.params;
+    const year = Number(yearString);
+
+    if (!yearString || isNaN(year)) throw badRequestError("Something is missing in the requisition");
+
+    try {
+        const startStats = await statsService.listStarStats(year);
+
+        return res.status(200).send(startStats);
+    } catch (error) {
+        if (error.name === "NotFoundError") {
+            return res.status(404).send(error);
+        }
+        if (error.name === "BadRequestError") {
+            return res.status(400).send(error);
+        }
+        return res.status(204).send(error);
+    }
+}

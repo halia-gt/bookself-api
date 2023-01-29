@@ -89,11 +89,21 @@ async function listFormatStats(year: number) {
     return result;
 }
 
+async function listStarStats(year: number) {
+    const existYear = await statsRepository.selectYear(year);
+    if (!existYear) throw notFoundError();
+
+    const result = await statsRepository.groupBooksByStars(existYear.year);
+
+    return result;
+}
+
 const statsService = {
     listAllYears,
     listMainStats,
     listMonthlyStats,
     listFormatStats,
+    listStarStats,
 };
 
 export { statsService };
