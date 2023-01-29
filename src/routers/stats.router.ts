@@ -1,5 +1,5 @@
 import express from "express";
-import { getFormatStats, getMainStats, getMonthlyStats, getStarsStats, getYears } from "../controllers/index.js";
+import { getFormatStats, getGenreStats, getMainStats, getMonthlyStats, getStarsStats, getYears } from "../controllers/index.js";
 
 const statsRouter = express.Router();
 statsRouter
@@ -7,6 +7,7 @@ statsRouter
     .get("/main/:year", getMainStats)
     .get("/months/:year", getMonthlyStats)
     .get("/formats/:year", getFormatStats)
-    .get("/stars/:year", getStarsStats);
+    .get("/stars/:year", getStarsStats)
+    .get("/genres/:year", getGenreStats);
 
 export { statsRouter };

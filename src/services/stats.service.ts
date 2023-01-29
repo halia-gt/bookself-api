@@ -1,6 +1,6 @@
 import { notFoundError } from "../errors/not-found-error.js";
 import { StatsMainDB } from "../protocols.js";
-import { statsRepository, topsRepository } from "../repositories/index.js";
+import { genresRepository, statsRepository, topsRepository } from "../repositories/index.js";
 
 async function listAllYears() {
     const years = await statsRepository.selectYears();
@@ -98,12 +98,37 @@ async function listStarStats(year: number) {
     return result;
 }
 
+async function listGenreStats(year: number) {
+    const existYear = await statsRepository.selectYear(year);
+    if (!existYear) throw notFoundError();
+
+    const genresCount = await statsRepository.groupBooksByGenres(existYear.year);
+    const genresName = await genresRepository.selectAllGenres();
+    const hashtable: Hashtable = {};
+
+    genresName.forEach(element => hashtable[element.id] = element.name);
+
+    const result = genresCount.map(element => {
+        return {
+            ...element,
+            genre: hashtable[element.genre_id],
+        }
+    });
+
+    return result;
+}
+
+interface Hashtable {
+    [key: string]: string;
+}
+
 const statsService = {
     listAllYears,
     listMainStats,
     listMonthlyStats,
     listFormatStats,
     listStarStats,
+    listGenreStats,
 };
 
 export { statsService };

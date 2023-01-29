@@ -208,6 +208,28 @@ async function groupBooksByStars(year: number) {
     });
 }
 
+async function groupBooksByGenres(year: number) {
+    return prisma.books_books.groupBy({
+        by: ["genre_id"],
+        where: {
+            books_read: {
+                some: {
+                    date_finished: {
+                        lte: new Date(`${year}-12-31`).toISOString(),
+                        gte: new Date(`${year}-01-01`).toISOString(),
+                    },
+                }
+            }
+        },
+        _count: {
+            id: true,
+        },
+        orderBy: {
+            genre_id: "asc",
+        },
+    });
+}
+
 const statsRepository = {
     selectYears,
     selectYear,
@@ -220,6 +242,7 @@ const statsRepository = {
     countMonthlyPagesRead,
     groupBooksByFormat,
     groupBooksByStars,
+    groupBooksByGenres,
 };
 
 export { statsRepository };
