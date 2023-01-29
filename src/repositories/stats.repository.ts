@@ -6,7 +6,10 @@ async function selectYears() {
             year: {
                 gte: 2022,
             }
-        }
+        },
+        orderBy: {
+            year: "desc",
+        },
     });
 }
 
@@ -175,6 +178,21 @@ async function countMonthlyPagesRead(year: number) {
     return result;
 }
 
+async function groupBooksByFormat(year: number) {
+    return prisma.books_read.groupBy({
+        by: ["book_format"],
+        where: {
+            date_finished: {
+                lte: new Date(`${year}-12-31`).toISOString(),
+                gte: new Date(`${year}-01-01`).toISOString(),
+            },
+        },
+        _count: {
+            book_id: true,
+        },
+    });
+}
+
 const statsRepository = {
     selectYears,
     selectYear,
@@ -185,6 +203,7 @@ const statsRepository = {
     countOwnedBooksRead,
     countMonthlyBooksRead,
     countMonthlyPagesRead,
+    groupBooksByFormat,
 };
 
 export { statsRepository };

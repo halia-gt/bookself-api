@@ -80,10 +80,20 @@ async function listMonthlyStats(year: number) {
     return result;
 }
 
+async function listFormatStats(year: number) {
+    const existYear = await statsRepository.selectYear(year);
+    if (!existYear) throw notFoundError();
+
+    const result = await statsRepository.groupBooksByFormat(existYear.year);
+
+    return result;
+}
+
 const statsService = {
     listAllYears,
     listMainStats,
     listMonthlyStats,
+    listFormatStats,
 };
 
 export { statsService };
