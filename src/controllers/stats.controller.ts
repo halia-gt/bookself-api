@@ -1,6 +1,6 @@
+import { RequestWithYear } from "../middlewares/year.middleware.js";
 import { years } from "@prisma/client";
 import { Request, Response } from "express";
-import { badRequestError } from "../errors/bad-request-error.js";
 import { StatsMainDB } from "../protocols.js";
 import { statsService } from "../services/stats.service.js";
 
@@ -20,11 +20,8 @@ export async function getYears(_req: Request, res: Response) {
     }
 }
 
-export async function getMainStats(req: Request, res: Response) {
-    const { year: yearString } = req.params;
-    const year = Number(yearString);
-
-    if (!yearString || isNaN(year)) throw badRequestError("Something is missing in the requisition");
+export async function getMainStats(req: RequestWithYear, res: Response) {
+    const { year } = req;
 
     try {
         const mainStats: StatsMainDB = await statsService.listMainStats(year);
@@ -41,11 +38,8 @@ export async function getMainStats(req: Request, res: Response) {
     }
 }
 
-export async function getMonthlyStats(req: Request, res: Response) {
-    const { year: yearString } = req.params;
-    const year = Number(yearString);
-
-    if (!yearString || isNaN(year)) throw badRequestError("Something is missing in the requisition");
+export async function getMonthlyStats(req: RequestWithYear, res: Response) {
+    const { year } = req;
 
     try {
         const monthlyStats = await statsService.listMonthlyStats(year);
@@ -62,11 +56,8 @@ export async function getMonthlyStats(req: Request, res: Response) {
     }
 }
 
-export async function getFormatStats(req: Request, res: Response) {
-    const { year: yearString } = req.params;
-    const year = Number(yearString);
-
-    if (!yearString || isNaN(year)) throw badRequestError("Something is missing in the requisition");
+export async function getFormatStats(req: RequestWithYear, res: Response) {
+    const { year } = req;
 
     try {
         const formatStats = await statsService.listFormatStats(year);
@@ -83,11 +74,8 @@ export async function getFormatStats(req: Request, res: Response) {
     }
 }
 
-export async function getStarsStats(req: Request, res: Response) {
-    const { year: yearString } = req.params;
-    const year = Number(yearString);
-
-    if (!yearString || isNaN(year)) throw badRequestError("Something is missing in the requisition");
+export async function getStarsStats(req: RequestWithYear, res: Response) {
+    const { year } = req;
 
     try {
         const startStats = await statsService.listStarStats(year);
@@ -104,11 +92,8 @@ export async function getStarsStats(req: Request, res: Response) {
     }
 }
 
-export async function getGenreStats(req: Request, res: Response) {
-    const { year: yearString } = req.params;
-    const year = Number(yearString);
-
-    if (!yearString || isNaN(year)) throw badRequestError("Something is missing in the requisition");
+export async function getGenreStats(req: RequestWithYear, res: Response) {
+    const { year } = req;
 
     try {
         const genreStats = await statsService.listGenreStats(year);

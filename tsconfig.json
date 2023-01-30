@@ -10,17 +10,7 @@
             "src",
             "tests"
           ],
-        "baseUrl": "src",
-        "paths": {
-            "@/*": [
-              "*"
-            ]
-        },
-        "plugins": [
-            {
-              "transform": "typescript-transform-paths"
-            }
-        ]
+        "baseUrl": "src"
     },
     "ts-node": {
         "esm": true

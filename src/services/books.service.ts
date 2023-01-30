@@ -19,8 +19,16 @@ async function listReadingBooks(): Promise<(authors_books & {
     return result;
 }
 
+async function listBooksRead(year: number) {
+    const result = await booksRepository.selectBooksRead(year);
+    if (!result) throw notFoundError();
+
+    return result;
+}
+
 const booksService = {
     listReadingBooks,
+    listBooksRead,
 };
 
 export { booksService };
