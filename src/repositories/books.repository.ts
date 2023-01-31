@@ -60,9 +60,45 @@ async function selectBooksRead(year: number) {
     });
 }
 
+async function selectBookById(book_id: number) {
+    return prisma.authors_books.findMany({
+        where: {
+            book_id,
+        },
+        include: {
+            books: {
+                include: {
+                    audiences: true,
+                    genres: true,
+                    subgenres: true,
+                    representativities_books: {
+                        include: {
+                            representativities: true,
+                        }
+                    },
+                    series_books: {
+                        include: {
+                            series: true,
+                        }
+                    },
+                    books_read: true,
+                    owned: true,
+                    books: true,
+                }
+            },
+            authors: {
+                include: {
+                    countries: true,
+                }
+            }
+        },
+    });
+}
+
 const booksRepository = {
     selectReadingBooks,
     selectBooksRead,
+    selectBookById,
 };
 
 export { booksRepository };
