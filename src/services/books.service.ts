@@ -16,6 +16,7 @@ import {
     books_series,
     owned
 } from "@prisma/client";
+import { BookRead } from "protocols.js";
 
 async function listReadingBooks(): Promise<(authors_books & {
     books: books_books & {
@@ -85,10 +86,21 @@ type CompleteBook = authors_books & {
     };
 };
 
+async function updateBookAsRead(book_id: number, body: BookRead) {
+    const book: books_books = await booksRepository.findSimpleBookById(book_id);
+    if (!book) throw notFoundError();
+
+    const bookRead: books_read = await booksRepository.findSimpleBookReadById(book_id);
+    if (!bookRead) throw notFoundError();
+
+    await booksRepository.updateBookRead(bookRead.id, body.date_finished, body.rating);
+}
+
 const booksService = {
     listReadingBooks,
     listBooksRead,
     findBook,
+    updateBookAsRead,
 };
 
 export { booksService };

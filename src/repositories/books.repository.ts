@@ -95,10 +95,41 @@ async function selectBookById(book_id: number) {
     });
 }
 
+async function findSimpleBookById(book_id: number) {
+    return prisma.books_books.findUnique({
+        where: {
+            id: book_id,
+        }
+    });
+}
+
+async function findSimpleBookReadById(book_id: number) {
+    return prisma.books_read.findFirst({
+        where: {
+            book_id,
+        }
+    });
+}
+
+async function updateBookRead(id: number, date_finished: Date, rating: number) {
+    return prisma.books_read.update({
+        where: {
+            id,
+        },
+        data: {
+            date_finished,
+            rating,
+        }
+    });
+}
+
 const booksRepository = {
     selectReadingBooks,
     selectBooksRead,
     selectBookById,
+    findSimpleBookById,
+    findSimpleBookReadById,
+    updateBookRead,
 };
 
 export { booksRepository };

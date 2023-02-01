@@ -65,3 +65,8 @@ export type HoursListened = {
     hours: number,
     minutes: number
 };
+
+export type BookRead = {
+    date_finished: Date,
+    rating: number,
+}
